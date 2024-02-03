@@ -1,0 +1,85 @@
+{
+  "experiment": {
+    "audience_conditions": "[\"and\", {\"audience_id\": 24939771411}]",
+    "description": "mostrar al 50% de usuarios el menú el tal cual está ahora y al otro 50% el menu sin N4 (Acotado a ROPA)",
+    "holdback": 0,
+    "name": "ITSMECOM-2150158: TEST A/B Menu con N4 vs Menu sin N4",
+    "project_id": 24787710195,
+    "status": "not_started",
+    "traffic_allocation": 10000,
+    "type": "a/b",
+    "url_targeting": {
+      "activation_type": "immediate",
+      "conditions": "[\"and\", [\"or\", {\"match_type\": \"regex\", \"type\": \"url\", \"value\": \"www.pullandbear.com/(de|es|mx|tr)/.?\"}]]",
+      "edit_url": "https://www.pullandbear.com/es/mujer-n6417"
+    },
+    "variations": [
+      {
+        "actions": [],
+        "archived": false,
+        "name": "Original",
+        "status": "active",
+        "weight": 5000
+      },
+      {
+        "actions": [],
+        "archived": false,
+        "name": "Experimento",
+        "status": "active",
+        "weight": 5000
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "key": "ventas_euros",
+      "name": "Ventas en euros",
+      "aggregator": "sum",
+      "field": "revenue",
+      "scope": "event",
+      "winning_direction": "increasing"
+    },
+    {
+      "key": "ventas",
+      "name": "Ventas",
+      "aggregator": "count",
+      "scope": "visitor",
+      "winning_direction": "increasing"
+    },
+    {
+      "key": "volumen_visitantes_visitas",
+      "name": "Volumen de visitantes/visitas",
+      "aggregator": "count",
+      "scope": "visitor",
+      "winning_direction": "increasing"
+    },
+    {
+      "key": "clicks_n3",
+      "name": "Clicks en N3",
+      "aggregator": "count",
+      "scope": "visitor",
+      "winning_direction": "increasing"
+    },
+    {
+      "key": "clicks_carouseles_parrilla",
+      "name": "Clicks en carouseles de parrilla",
+      "aggregator": "count",
+      "scope": "visitor",
+      "winning_direction": "increasing"
+    },
+    {
+      "key": "clicks_productos_parrilla",
+      "name": "Clicks en productos de parrilla",
+      "aggregator": "count",
+      "scope": "visitor",
+      "winning_direction": "increasing"
+    },
+    {
+      "key": "cestas_arrastradas_parrillas", 
+      "name": "Cestas arrastradas en parrillas",
+      "aggregator": "count",
+      "scope": "visitor",
+      "winning_direction": "increasing"
+    }
+  ]
+}

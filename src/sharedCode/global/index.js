@@ -1,90 +1,159 @@
-window["optimizely"] = window["optimizely"] || [];
+class Optimizely {
+  constructor(metrics, experimentCode) {
+    this.metrics = metrics;
+    this.experimentCode = experimentCode;
 
-var experimentCode = '2219612';
-
-var metrics = {
-  cestas_arrastradas_buscador: 'cestas_arrastradas_buscador',
-  cestas_arrastradas_personalizacion: 'cestas_arrastradas_pers',
-  clicks_elementos_personalizacion: 'clicks_elementos_pers',
-  clicks_productos_buscador: 'clicks_productos_buscador',
-  ventas: 'ventas',
-  ventas_euros: 'ventas_euros',
-  visitas: 'visitas',
-  visitantes_unicos: 'visitantes_unicos',
-};
-
-function getMetricName(metric) {
-  return metrics[metric] + '_' + experimentCode;
-}
-
-function pushAttrsToOptimizely(eventType, attrs) {
-  window["optimizely"].push({
-    type: eventType,
-    attributes: attrs
-  });
-}
-
-function pushEventToOptimizely(eventName, tags) {
-  window["optimizely"].push({
-    type: "event",
-    eventName: eventName,
-    tags: tags
-  });
-}
-
-function optiTrackSegmentationISO() {
-  var attrs = {
-    'sgm_pais': inditex.iCountryCode
+    this.trackSegmentationISO();
   }
-  pushAttrsToOptimizely('user', attrs);
-}
 
-function getFromSS (key) {
-  return JSON.parse(sessionStorage.getItem(key));
-}
+  getFromSS (key) {
+    return JSON.parse(sessionStorage.getItem(key));
+  }
 
-function optiConfirmationRevenue(experimentCookieId) {
-  if (inditex.readCookie("optyVisitExperiment" + experimentCookieId) === '1') {
-    var productsCookie = inditex.readCookie('optiProductsSku' + experimentCode);
-    var productsCookieValues = JSON.parse(productsCookie);
+  getMetricName(metric) {
+    return this.metrics[metric] + '_' + this.experimentCode;
+  }
 
-    if(!productsCookieValues) {
-      return;
+  persistClickProduct(productId, key) {
+    const products = this.getFromSS(key) || [];
+
+    if (products.indexOf(productId) === -1) {
+      products.push(productId);
     }
 
-    var optiTrackRevenue = setInterval(function () {
-      if (!inditex.iXOrderOrderSummaryJSON || !inditex.iXOrderOrderSummaryJSON.totalOrderEuro) {
+    sessionStorage.setItem(key, JSON.stringify(products));
+  }
+
+  pushAttrs(eventType, attrs) {
+    window["optimizely"].push({
+      type: eventType,
+      attributes: attrs
+    });
+  }
+
+  pushEvent(eventName, tags) {
+    window["optimizely"].push({
+      type: "event",
+      eventName: this.getMetricName(eventName),
+      tags: tags
+    });
+  }
+
+  registerVisits() {
+   this.trackVisit();
+
+    if (inditex.readCookie(`optyVisitExperiment${this.experimentCode}`) !== '1') {
+      this.trackUniqueVisitor();
+      inditex.writeCookie(`optyVisitExperiment${this.experimentCode}`, '1', 30);
+    }
+  }
+
+  trackAddToCartSearchFromParrilla(data) {
+    const searchProductsCached = this.getFromSS(`clickProductsSearch${this.experimentCode}`);
+    const clickOrigin = sessionStorage.getItem(`searchProductClickedType${this.experimentCode}`);
+    let productAlreadyCached = false;
+
+    if (clickOrigin === "clicks_productos_buscador" && searchProductsCached !== null && searchProductsCached.indexOf(inditex.iProductId) !== -1) {
+      this.pushEvent('cestas_arrastradas_buscador', {
+        value: 1.00
+      });
+
+      productAlreadyCached = true;
+    }
+
+    if (productAlreadyCached) {
+      const productTestAB = data.model.toJSON();
+      const { sizeSelected: { sku: productSku } } = productTestAB;
+      this.updateProductCookie(productSku);
+    }
+
+    sessionStorage.removeItem(`searchProductClickedType${this.experimentCode}`);
+  }
+
+  trackConfirmationRevenue() {
+    if (inditex.readCookie("optyVisitExperiment" + this.experimentCode) === '1') {
+      const productsCookie = inditex.readCookie(`optiProductsSku${this.experimentCode}`);
+      const productsCookieValues = JSON.parse(productsCookie);
+
+      if(!productsCookieValues) {
         return;
       }
 
-      clearInterval(optiTrackRevenue);
-
-      var totalRevenue = 0;
-      inditex.iXOrderOrderSummaryJSON.items.forEach(item => {
-        if (productsCookieValues.indexOf(item.sku) !== -1) {
-          var unitPriceEuro = item.unitPriceEuro;
-          totalRevenue = totalRevenue + unitPriceEuro;
+      const optiTrackRevenue = setInterval(() => {
+        if (!inditex.iXOrderOrderSummaryJSON || !inditex.iXOrderOrderSummaryJSON.totalOrderEuro) {
+          return;
         }
-      });
 
-      if(totalRevenue !== 0) {
-        pushEventToOptimizely(getMetricName('ventas_euros'), {
-          revenue: totalRevenue / 100
+        clearInterval(optiTrackRevenue);
+
+        let totalRevenue = 0;
+        inditex.iXOrderOrderSummaryJSON.items.forEach(item => {
+          if (productsCookieValues.indexOf(item.sku) !== -1) {
+            const unitPriceEuro = item.unitPriceEuro;
+            totalRevenue = totalRevenue + unitPriceEuro;
+          }
         });
 
-        pushEventToOptimizely(getMetricName('ventas'), {
-          value: 1.00
-        });
-      }
-    }, 500);
+        if(totalRevenue !== 0) {
+          this.pushEvent('ventas_euros', {
+            revenue: totalRevenue / 100
+          });
+
+          this.pushEvent('ventas', {
+            value: 1.00
+          });
+        }
+      }, 500);
+    }
+  }
+
+  trackImpression(amount = 1.00) {
+    this.pushEvent('impresiones', {
+      value: amount
+    });
+  }
+
+  trackSearchProductClicked(productId) {
+    const productType = `clickProductsSearch${this.experimentCode}`;
+    const metricName = 'clicks_productos_buscador';
+
+    this.pushEvent(metricName, {
+      value: 1.00
+    });
+
+    this.persistClickProduct(productId, productType)
+    sessionStorage.setItem(`searchProductClickedType${this.experimentCode}`, metricName);
+  }
+
+  trackSegmentationISO() {
+    this.pushAttrs('user', {
+      'sgm_pais': inditex.iCountryCode
+    });
+  }
+
+  trackUniqueVisitor() {
+    this.pushEvent('visitantes_unicos', {
+      value: 1.00
+    });
+  }
+
+  trackVisit() {
+    this.pushEvent('visitas', {
+      value: 1.00
+    });
+  }
+
+  updateProductCookie(productSku) {
+    const productCookieKey = `optiProductsSku${this.experimentCode}`;
+    const productsCookie = inditex.readCookie(productCookieKey);
+    const productsCookieValues = JSON.parse(productsCookie) || [];
+
+    if (productsCookieValues.indexOf(productSku) === -1) {
+      productsCookieValues.push(productSku);
+    }
+
+    inditex.writeCookie(productCookieKey, JSON.stringify(productsCookieValues), 30);
   }
 }
 
-export default {
-  optiTrackSegmentationISO,
-  optiConfirmationRevenue,
-  getFromSS,
-  pushEventToOptimizely,
-  getMetricName,
-  pushAttrsToOptimizely,
-}
+export default Optimizely;

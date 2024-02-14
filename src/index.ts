@@ -5,8 +5,7 @@ import Events from './api/events'
 import Experiments from './api/experiments'
 
 const PROJECT_ID = 24787710195
-const TEST_ID = '2150158-copy-finish-him'
-let experimentID = 0
+const TEST_ID = '2219475'
 
 const parseJSON = (data: GenTestAB) => {
   return {
@@ -59,8 +58,7 @@ const createEvents = async (parsedData: GenTestAB, experimentId: Number) => {
 // Read data.json
 const parsedData: GenTestAB = parseJSON(data)
 const experiment = await Experiments.create(parsedData.experiment);
-experimentID = experiment.id
-await createEvents(parsedData, experiment.id)
+await createEvents(parsedData, experiment.id);
 
-// await Experiments.getById(experimentID);
+// await Experiments.getById(experiment.id);
 // await Events.getById('27496100106');

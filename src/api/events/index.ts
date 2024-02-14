@@ -16,10 +16,6 @@ const createEvent = async (data: any, projectId: Number) => {
     return response.data
   } catch (error) {
     console.log('Error ---->> ', error)
-    return {
-      id: 27525740394,
-      key: 'ventas_euros_2150158-copy-second-try',
-    }
   }
 }
 

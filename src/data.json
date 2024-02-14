@@ -1,9 +1,10 @@
 {
+  "experimentCode": "2219475",
   "experiment": {
-    "audience_conditions": "[\"and\", {\"audience_id\": 24939771411}]",
-    "description": "mostrar al 50% de usuarios el menú el tal cual está ahora y al otro 50% el menu sin N4 (Acotado a ROPA)",
+    "audience_conditions": "[\"and\", {\"audience_id\": 25023530143}]",
+    "description": "mostrar al 50% de usuarios el buscador en web mobile con su grid actual vs al 50% donde el grid tendrá en una misma fila 3 productos.",
     "holdback": 0,
-    "name": "ITSMECOM-2150158: TEST A/B Menu con N4 vs Menu sin N4",
+    "name": "ITSMECOM-2219475: TEST Vista 3 buscador vs Vista 2 web mobile",
     "project_id": 24787710195,
     "status": "not_started",
     "traffic_allocation": 10000,
@@ -30,6 +31,15 @@
       }
     ]
   },
+  "metrics_keys": [
+    "ventas_euros",
+    "ventas",
+    "visitas",
+    "visitantes_unicos",
+    "clicks_productos_buscador",
+    "cestas_arrastradas_buscador",
+    "impresiones"
+  ],
   "metrics": [
     {
       "key": "ventas_euros",
@@ -47,36 +57,36 @@
       "winning_direction": "increasing"
     },
     {
-      "key": "volumen_visitantes_visitas",
-      "name": "Volumen de visitantes/visitas",
+      "key": "visitas",
+      "name": "Visitas",
       "aggregator": "count",
       "scope": "visitor",
       "winning_direction": "increasing"
     },
     {
-      "key": "clicks_n3",
-      "name": "Clicks en N3",
+      "key": "visitantes_unicos",
+      "name": "Visitantes Unicos",
+      "aggregator": "unique",
+      "scope": "visitor",
+      "winning_direction": "increasing"
+    },
+    {
+      "key": "clicks_productos_buscador",
+      "name": "Clicks en productos del buscador",
       "aggregator": "count",
       "scope": "visitor",
       "winning_direction": "increasing"
     },
     {
-      "key": "clicks_carouseles_parrilla",
-      "name": "Clicks en carouseles de parrilla",
+      "key": "cestas_arrastradas_buscador",
+      "name": "Cestas arrastradas en buscador",
       "aggregator": "count",
       "scope": "visitor",
       "winning_direction": "increasing"
     },
     {
-      "key": "clicks_productos_parrilla",
-      "name": "Clicks en productos de parrilla",
-      "aggregator": "count",
-      "scope": "visitor",
-      "winning_direction": "increasing"
-    },
-    {
-      "key": "cestas_arrastradas_parrillas", 
-      "name": "Cestas arrastradas en parrillas",
+      "key": "impresiones",
+      "name": "Impresiones",
       "aggregator": "count",
       "scope": "visitor",
       "winning_direction": "increasing"

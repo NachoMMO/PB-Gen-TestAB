@@ -1,13 +1,30 @@
+import { getFromSS } from "./utils.js";
+
+/**
+ * Clase encargada de manejar las métricas de Optimizely. En
+ * esta clase se encuentran los métodos necesarios para trackear
+ * las métricas de Optimizely. Para el correcto funcionamiento,
+ * es necesario que esté cargado el script de Optimizely en la
+ * página.
+ *
+ * Por otro lado, para construir una instancia de esta clase, es
+ * necesario pasarle un objeto con las métricas que se quieren
+ * trackear, y el código del experimento.
+ *
+ * @class Optimizely
+ *
+ * @param { Array } metrics - Array de las métricas para trackear.
+ * @param { String } experimentCode - Código del experimento.
+ *
+ */
 class Optimizely {
   constructor(metrics, experimentCode) {
+    window["optimizely"] = window["optimizely"] || [];
+
     this.metrics = metrics;
     this.experimentCode = experimentCode;
 
     this.trackSegmentationISO();
-  }
-
-  getFromSS (key) {
-    return JSON.parse(sessionStorage.getItem(key));
   }
 
   getMetricName(metric) {
@@ -15,7 +32,7 @@ class Optimizely {
   }
 
   persistClickProduct(productId, key) {
-    const products = this.getFromSS(key) || [];
+    const products = getFromSS(key) || [];
 
     if (products.indexOf(productId) === -1) {
       products.push(productId);
@@ -49,7 +66,7 @@ class Optimizely {
   }
 
   trackAddToCartSearchFromParrilla(data) {
-    const searchProductsCached = this.getFromSS(`clickProductsSearch${this.experimentCode}`);
+    const searchProductsCached = getFromSS(`clickProductsSearch${this.experimentCode}`);
     const clickOrigin = sessionStorage.getItem(`searchProductClickedType${this.experimentCode}`);
     let productAlreadyCached = false;
 

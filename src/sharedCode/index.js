@@ -1,11 +1,9 @@
-import Optimizely from "./global/index.js";
-import utils from "./global/utils.js";
+import Optimizely from "./global/Optimizely.js";
+import { parseMetrics } from "./global/utils.js";
 import { experimentCode, metrics_keys } from '../data.json' assert { type: 'json' };
 
 if (window.Backbone && inditex.isMobileDevice()) {
-  window["optimizely"] = window["optimizely"] || [];
-
-  const parsedMetrics = utils.parseMetrics(metrics_keys);
+  const parsedMetrics = parseMetrics(metrics_keys);
   const optimizely = new Optimizely(parsedMetrics, experimentCode);
 
   function isCategoryInExperiment() {

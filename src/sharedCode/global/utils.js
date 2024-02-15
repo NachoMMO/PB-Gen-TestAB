@@ -17,6 +17,19 @@ function parseMetrics(metrics) {
   return parsedMetrics;
 }
 
-export default {
+/**
+ * Se encarga de recibir una key y devolver el valor que se encuentra
+ * en el sessionStorage.
+ *
+ * @param {String} key - Clave para buscar en el sessionStorage.
+ *
+ * @returns {Object} - Valor que se encuentra en el sessionStorage.
+ */
+function getFromSS (key) {
+  return JSON.parse(sessionStorage.getItem(key));
+}
+
+export {
+  getFromSS,
   parseMetrics
 }

@@ -32,7 +32,7 @@ const main = () => {
   });
 
   Backbone.Radio.channel('productBus').on('product:load', () => {
-    if (isCategoryInExperiment() && isProductVisited(inditex.iXProductInfo?.id)) {
+    if (isCategoryInExperiment() && !isProductVisited(inditex.iXProductInfo?.id)) {
       productsVisited.push(inditex.iXProductInfo?.id);
       optimizely.registerVisits()
     }

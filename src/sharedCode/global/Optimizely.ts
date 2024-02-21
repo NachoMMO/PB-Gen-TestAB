@@ -1,7 +1,8 @@
-import { EventDetail, OptimizelyAttrs, OptimizelyEvent } from "./types.js";
+import { CommonEvent, EventDetail, OptimizelyAttrs, OptimizelyEvent } from "./types.js";
 import { getFromSS } from "./utils.js";
 
 const inditex = window['inditex'] || {};
+const Backbone = window['Backbone'] || {};
 
 /**
  * Clase encargada de manejar las métricas de Optimizely. En
@@ -28,7 +29,7 @@ class Optimizely {
   experimentCode: string;
   fnAllowBindEvents: Function;
 
-  constructor(metrics: Object, experimentCode: string, fnAllowBindEvents: Function) {
+  constructor(metrics: Object, experimentCode: string, fnAllowBindEvents: Function = () => true) {
     window["optimizely"] = window["optimizely"] || [];
 
     this.metrics = metrics;
@@ -36,6 +37,35 @@ class Optimizely {
     this.fnAllowBindEvents = fnAllowBindEvents;
 
     this.trackSegmentationISO();
+  }
+
+  /**
+   * Bindea el evento de cuando se hace un cambio en el color
+   * seleccionado en la ficha de producto. Después, se trackea
+   * dicho evento.
+   */
+  bindPDPColorSelectedClicked() {
+    if (inditex.isMobileDevice()) {
+      Backbone.Radio.channel('productBus').on('setColorSelected', () => {
+        if (!this.fnAllowBindEvents()) {
+          return;
+        }
+
+        this.trackPDPColorSelectedClicked();
+      });
+      return;
+    }
+
+    document.addEventListener('product-image-selected', ev => {
+      if (!this.fnAllowBindEvents()) {
+        return;
+      }
+  
+      const { target: { classList } } = ev as CommonEvent;
+      if (classList.contains('show-colors-carousel')) {
+        this.trackPDPColorSelectedClicked();
+      }
+    });
   }
 
   /**
@@ -199,6 +229,25 @@ class Optimizely {
   }
 
   /**
+   * Trackea el evento de añadir al carrito desde la ficha de producto.
+   * Además, actualiza el array de SKU de productos añadidos al carrito
+   * en la cookie de cara a ser trackeados en el evento de confirmación
+   * de compra.
+   *
+   * @param {Object} data - Datos del producto que se ha añadido al
+   * carrito.
+   */
+  trackAddToCartFromPDP(data) {
+    this.pushEvent('clicks_add_to_cart', {
+      value: 1.00
+    });
+
+    const productTestAB = data.model.toJSON();
+    const { sizeSelected: { sku: productSku } } = productTestAB;
+    this.updateProductCookie(productSku);
+  }
+
+  /**
    * Trackea los eventos de ventas (ventas y ventas_euros) de confirmación
    * de compra siempre y cuando el usuario haya visitado el experimento
    * previamente.
@@ -267,6 +316,16 @@ class Optimizely {
 
     this.persistClickProduct(productId, productType)
     sessionStorage.setItem(`searchProductClickedType${this.experimentCode}`, metricName);
+  }
+
+  /**
+   * Trackea el evento de cambio de color seleccionado en la ficha de
+   * producto.
+   */
+  trackPDPColorSelectedClicked() {
+    this.pushEvent('clicks_seleccion_color', {
+      value: 1.00
+    });
   }
 
   /**

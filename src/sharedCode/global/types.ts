@@ -1,3 +1,7 @@
+export interface CommonEvent extends Event {
+  target:      HTMLElement;
+}
+
 export interface EventDetail extends Event {
   detail:      any;
 }

@@ -1,19 +1,19 @@
 {
-  "audience": "all_devices",
-  "code": "2313862",
+  "audience": "only_desktop",
+  "code": "2314326",
   "countries": [
     "de",
     "fr",
     "mx",
     "tr"
   ],
-  "description": "mostrar al 50% de usuarios la pdp actual en los productos monocolor vs una estructura de pdp en la este visible la opción del color",
-  "name": "TEST A/B PDP productos mono color",
+  "description": "mostrar al 50% de usuarios la pdp actual en la cual cuando añades a cesta sin seleccionar una talla te sale un mensaje en rojo vs la misma interacción que tenemos en web mobile o app, que te manda directamente al modal de selección de tallas",
+  "name": "TEST A/B PDP interacción selección de talla",
   "metrics_keys": [
     "ventas_euros",
     "ventas",
     "clicks_add_to_cart",
-    "clicks_seleccion_color",
+    "clicks_seleccion_talla",
     "visitas",
     "visitantes_unicos"
   ]

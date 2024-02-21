@@ -20,7 +20,7 @@ const createEvents = async (parsedData: GenTestAB, experimentId: Number) => {
 
   for (const event of parsedData.events) {
     const { id: event_id, key: event_key } = await Events.createEvent(event, PROJECT_ID)
-    const metricFounded = parsedData.events.find((m: Metric) => `${m.key}_${EXPERIMENT_CODE}` === event_key)
+    const metricFounded = parsedData.events.find((m: Metric) => m.key === event_key)
 
     if (!metricFounded) {
       console.log('No metric founded')

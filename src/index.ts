@@ -1,26 +1,14 @@
 import data from './data.json' assert { type: 'json' }
 
-import { GenTestAB, Metric } from './types'
+import { EntryTestData, GenTestAB, Metric } from './types'
+import { getExperimentDataParsed } from './utils'
+
 import Events from './api/events'
 import Experiments from './api/experiments'
 
 const PROJECT_ID = 24787710195
-const TEST_ID = '2219475'
-
-const parseJSON = (data: GenTestAB) => {
-  return {
-    ...data,
-    events: data.metrics.map((metric: Metric) => ({
-      ...metric,
-      archived: false,
-      category: "other",
-      event_type: "custom",
-      project_id: PROJECT_ID,
-      key: `${metric.key}_${TEST_ID}`,
-      name: `${metric.name} ${TEST_ID}`,
-    })),
-  }
-}
+const ENTRY_DATA = data as EntryTestData
+const EXPERIMENT_CODE: String = ENTRY_DATA.code
 
 const createEvents = async (parsedData: GenTestAB, experimentId: Number) => {
   const parsedMetrics: any = []
@@ -32,7 +20,7 @@ const createEvents = async (parsedData: GenTestAB, experimentId: Number) => {
 
   for (const event of parsedData.events) {
     const { id: event_id, key: event_key } = await Events.createEvent(event, PROJECT_ID)
-    const metricFounded = parsedData.metrics.find((m: Metric) => `${m.key}_${TEST_ID}` === event_key)
+    const metricFounded = parsedData.events.find((m: Metric) => `${m.key}_${EXPERIMENT_CODE}` === event_key)
 
     if (!metricFounded) {
       console.log('No metric founded')
@@ -50,15 +38,28 @@ const createEvents = async (parsedData: GenTestAB, experimentId: Number) => {
     parsedMetrics.push(metric)
   }
 
-  console.log('parsedMetrics ---->> ', parsedMetrics)
-
   await Events.createMetrics(parsedMetrics, experimentId)
 }
 
-// Read data.json
-const parsedData: GenTestAB = parseJSON(data)
-const experiment = await Experiments.create(parsedData.experiment);
-await createEvents(parsedData, experiment.id);
+const main = async () => {
+  try {
+    const parsedData: GenTestAB = getExperimentDataParsed(ENTRY_DATA, PROJECT_ID, EXPERIMENT_CODE)
+    console.log(parsedData)
+
+    // const path = "./build/index.js";
+    // const file = Bun.file(path);
+
+    // const text = await file.text();
+    // console.log(text);
+    const experiment = await Experiments.create(parsedData.experiment);
+    await createEvents(parsedData, experiment.id);
+    // await Experiments.updateSharedCode(27732380067, text);
+  } catch (err) {
+    console.error(err)
+  }
+}
 
 // await Experiments.getById(experiment.id);
 // await Events.getById('27496100106');
+
+main()

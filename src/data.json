@@ -1,95 +1,20 @@
 {
-  "experimentCode": "2219475",
-  "experiment": {
-    "audience_conditions": "[\"and\", {\"audience_id\": 25023530143}]",
-    "description": "mostrar al 50% de usuarios el buscador en web mobile con su grid actual vs al 50% donde el grid tendrá en una misma fila 3 productos.",
-    "holdback": 0,
-    "name": "ITSMECOM-2219475: TEST Vista 3 buscador vs Vista 2 web mobile",
-    "project_id": 24787710195,
-    "status": "not_started",
-    "traffic_allocation": 10000,
-    "type": "a/b",
-    "url_targeting": {
-      "activation_type": "immediate",
-      "conditions": "[\"and\", [\"or\", {\"match_type\": \"regex\", \"type\": \"url\", \"value\": \"www.pullandbear.com/(de|es|mx|tr)/.?\"}]]",
-      "edit_url": "https://www.pullandbear.com/es/mujer-n6417"
-    },
-    "variations": [
-      {
-        "actions": [],
-        "archived": false,
-        "name": "Original",
-        "status": "active",
-        "weight": 5000
-      },
-      {
-        "actions": [],
-        "archived": false,
-        "name": "Experimento",
-        "status": "active",
-        "weight": 5000
-      }
-    ]
-  },
+  "audience": "all_devices",
+  "code": "2313862",
+  "countries": [
+    "de",
+    "fr",
+    "mx",
+    "tr"
+  ],
+  "description": "mostrar al 50% de usuarios la pdp actual en los productos monocolor vs una estructura de pdp en la este visible la opción del color",
+  "name": "TEST A/B PDP productos mono color",
   "metrics_keys": [
     "ventas_euros",
     "ventas",
+    "clicks_add_to_cart",
+    "clicks_seleccion_color",
     "visitas",
-    "visitantes_unicos",
-    "clicks_productos_buscador",
-    "cestas_arrastradas_buscador",
-    "impresiones"
-  ],
-  "metrics": [
-    {
-      "key": "ventas_euros",
-      "name": "Ventas en euros",
-      "aggregator": "sum",
-      "field": "revenue",
-      "scope": "event",
-      "winning_direction": "increasing"
-    },
-    {
-      "key": "ventas",
-      "name": "Ventas",
-      "aggregator": "count",
-      "scope": "visitor",
-      "winning_direction": "increasing"
-    },
-    {
-      "key": "visitas",
-      "name": "Visitas",
-      "aggregator": "count",
-      "scope": "visitor",
-      "winning_direction": "increasing"
-    },
-    {
-      "key": "visitantes_unicos",
-      "name": "Visitantes Unicos",
-      "aggregator": "unique",
-      "scope": "visitor",
-      "winning_direction": "increasing"
-    },
-    {
-      "key": "clicks_productos_buscador",
-      "name": "Clicks en productos del buscador",
-      "aggregator": "count",
-      "scope": "visitor",
-      "winning_direction": "increasing"
-    },
-    {
-      "key": "cestas_arrastradas_buscador",
-      "name": "Cestas arrastradas en buscador",
-      "aggregator": "count",
-      "scope": "visitor",
-      "winning_direction": "increasing"
-    },
-    {
-      "key": "impresiones",
-      "name": "Impresiones",
-      "aggregator": "count",
-      "scope": "visitor",
-      "winning_direction": "increasing"
-    }
+    "visitantes_unicos"
   ]
 }

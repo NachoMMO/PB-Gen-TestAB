@@ -19,7 +19,26 @@ const create = async (data: any) => {
   }
 }
 
+// Update
+const updateSharedCode = async (id: Number, sharedCode: String) => {
+  try {
+    const data = {
+      changes: [
+        {
+          type: "custom_code",
+          async: false,
+          value: sharedCode
+        }
+      ]
+    }
+    await axios.patch(`/experiments/${id}`, data)
+  } catch (error) {
+    console.log('Error ---->> ', error.toJSON())
+  }
+}
+
 export default {
   create,
   getById,
+  updateSharedCode,
 }

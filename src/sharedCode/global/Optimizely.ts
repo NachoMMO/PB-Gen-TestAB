@@ -69,6 +69,21 @@ class Optimizely {
   }
 
   /**
+   * Bindea el evento de cuando se hace un cambio en la talla
+   * seleccionada en la ficha de producto. Después, se trackea
+   * dicho evento.
+   */
+  bindPDPSizeSelectedClicked() {
+    document.addEventListener('click-size', () => {
+      if (!this.fnAllowBindEvents()) {
+        return;
+      }
+  
+      this.trackPDPSizeSelectedClicked();
+    });
+  }
+
+  /**
    * Bindea el evento de cuando se hace click en un producto del
    * buscador. Después, se trackea dicho evento.
    */
@@ -324,6 +339,16 @@ class Optimizely {
    */
   trackPDPColorSelectedClicked() {
     this.pushEvent('clicks_seleccion_color', {
+      value: 1.00
+    });
+  }
+
+  /**
+   * Trackea el evento de cambio de talla seleccionada en la ficha de
+   * producto.
+   */
+  trackPDPSizeSelectedClicked() {
+    this.pushEvent('clicks_seleccion_talla', {
       value: 1.00
     });
   }

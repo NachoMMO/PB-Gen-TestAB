@@ -28,7 +28,9 @@ const main = () => {
   optimizely.bindPDPColorSelectedClicked();
 
   Backbone.Radio.channel('productBus').on('product:addToCart', (data) => {
-    optimizely.trackAddToCartFromPDP(data)
+    if (isCategoryInExperiment()) {
+      optimizely.trackAddToCartFromPDP(data)
+    }
   });
 
   Backbone.Radio.channel('productBus').on('product:load', () => {

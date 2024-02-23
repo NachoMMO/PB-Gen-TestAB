@@ -1,11 +1,15 @@
 # Generación de Test A/B y Creador del SharedCode
 
-Este proyecto nace para hacenros la vida mas sencilla de cara a crear nuevos Test A/B con la herramienta Optimizely.
+Este proyecto nace para hacenros la vida mas sencilla de cara a crear nuevos Test A/B con la herramienta Optimizely. El alcance de las funcionalidades con las que cuenta este proyecto es:
+- Creación del Test en Optimizely mediante los datos de un JSON
+- Creación del código 'SharedCode' para después copiarlo y subirlo a Optimizely
+
+Por tanto, como sabes, con este proyecto no vas a poder crear el código de la variante. Eso lo tienes que hacer directamente en Optimizely, pero no te preocupes que estamos en ello 😏
 
 ## Instalación
 
 > [!IMPORTANT]
-> Para poder utilizar las maravillosas funcionalidades que ofrece este proyecto es imprescindible instalar [BUN 🧅](https://bun.sh/), sólo está disponible para su instalación en Mac, Linux y en Windows con Subsistema de Linux (WSL) instalado. Para poder instalar Bun en vuestro ordenador, podéis ejecutar el siguiente comando:
+> Para poder utilizar las maravillosas funcionalidades que ofrece este proyecto es imprescindible instalar [Bun](https://bun.sh/)🧅, sólo está disponible para su instalación en Mac, Linux y en Windows con Subsistema de Linux (WSL) instalado. Para poder instalar Bun en vuestro ordenador, podéis ejecutar el siguiente comando:
 
 ```
 curl -fsSL https://bun.sh/install | bash
@@ -44,7 +48,7 @@ Este proyecto está estructurado con las siguientes carpetas:
 </table>
 
 ### data.json 🎛️: Cómo rellenar los datos de nuestro test
-```
+```json
 {
   "audience": "",
   "code": "",
@@ -100,6 +104,51 @@ Hasta ahora, ese código se ha creado en el propio editor de Optimizely, el cual
 No te preocupes! Para eso tienes el fichero **./src/sharedCode/index.ts**, en el que tienes que modificar el contenido de la función **main** con el código que quieras! Hay partes de este código que son comunes, las cuales tendrás por defecto cuando crees una nueva rama a partir de la rama **develop** para empezar a codificar tu test.
 
 #### Ahhhh, vale! Pero comentame un poquito como funciona! 😟
+Cuando empieces a editar tu SharedCode, te encontrarás con el siguiente código en el fichero **./src/sharedCode/index.ts**:
+```ts
+import Optimizely from "./global/Optimizely.js";
+import { parseMetrics } from "./global/utils.js";
+import { code as experimentCode, metrics_keys } from '../data.json' assert { type: 'json' };
+
+const inditex = window['inditex'] || {};
+const Backbone = window['Backbone'] || {};
+
+const main = () => {
+  const parsedMetrics = parseMetrics(metrics_keys);
+
+  const isCategoryInExperiment = () => {
+    return true;
+  }
+
+  const optimizely = new Optimizely(parsedMetrics, experimentCode, isCategoryInExperiment);
+
+  if (inditex.iPage === 'ItxOrderConfirmationPage') {
+    optimizely.trackConfirmationRevenue();
+  }
+};
+
+if (Backbone) {
+  main();
+}
+```
+Donde tienes que empezar a modificar el fichero, añadiendo el código en concreto que te interese es después del **if (inditex.iPage === 'ItxOrderConfirmationPage')** de la línea 17, bindeando los eventos que te permitan medir lo que te interese, por ejemplo, cuando se añade un producto a cesta, cuando se hace click en un producto de una parrilla, etc...
+
+Nota que hay una función **isCategoryInExperiment**, la cual, se utiliza para filtrar posibles casos de uso para que solo se contabilice aquellos que cumplan la condición que le pongas a la función. Esto para qué sirve? Pues que a lo mejor tu quieres detectar que se hace click en el selector de tallas de la ficha de producto, pero sólo cuando dicho producto tenga un único color disponible. Pues con esta función, añadiendo esa condición podrías controlarlo =)
+
+#### Y hay algun sitio donde tengamos métodos comunes que se repiten Test tras Test?
+Cooooooorrecto ✅
+En el fichero **./src/sharedCode/global/Optimizely.ts** tenemos una clase que almacena todos los métodos que poco a poco, dependiendo de cómo queremos medir las métricas, vamos creando de cara a que se puedan reutilizar en próximos test. Por ejemplo, dentro de dicha clase, tenemos un método **registerMetrics** que nos sirve para trackear las métricas de visitas en cada Test.
+
+> [!TIP]
+> Si alguna vez, cuando desarrollas un Test, añades un nuevo método dentro de **Optimizely.ts**, deberías subir ese cambio a la rama **develop** de cara a que se cuente con esa funcionalidad en los Test futuros.
+
+#### Perfecto! Ya tengo mi SharedCode, como lo puedo generar?
+Súper fácil, una vez que ya lo tienes listo en tu fichero **./src/sharedCode/index.ts**, tan solo tienes que ejecutar el siguiente comando:
+```
+bun build_def
+```
+
+Si no ha habido ningún fallo al compilar y traspilar el código a ES5, deberías ver que se ha creado una carpeta **build** y dentro de ella, hay un fichero **index.js**. El contenido de este fichero es el que tienes que pegar en la sección **sharedCode** de Optimizely.
 
 ## Se vienen cositas... 🥰
 - [ ] Automatizar la integración con Google Analytics desde el script de creación

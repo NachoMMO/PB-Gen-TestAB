@@ -55,12 +55,12 @@ class Optimizely {
       return;
     }
 
-    document.addEventListener('product-image-selected', ev => {
+    document.addEventListener('product-image-selected', (ev: CommonEvent) => {
       if (!this.fnAllowBindEvents()) {
         return;
       }
   
-      const { target: { classList } } = ev as CommonEvent;
+      const { target: { classList } } = ev;
       if (classList.contains('show-colors-carousel')) {
         this.trackPDPColorSelectedClicked();
       }
@@ -195,7 +195,9 @@ class Optimizely {
   }
 
   /**
-   * Registra las visitas y visitantes únicos del experimento.
+   * Registra las visitas y visitantes únicos del experimento, en función
+   * de si el usuario ya ha visitado el experimento previamente o no, mediante
+   * el uso de cookies.
    */
   registerVisits() {
    this.trackVisit();

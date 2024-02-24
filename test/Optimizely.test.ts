@@ -47,6 +47,111 @@ describe('Optimizely Test Cases', () => {
     expect(optimizely.fnAllowBindEvents()).toEqual(true)
   });
 
+  it('should PDP size selected clicked', () => {
+    const metrics = {
+      'clicks_seleccion_talla': 'clicks_seleccion_talla',
+    }
+    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    optimizely.bindPDPSizeSelectedClicked()
+    
+    document.dispatchEvent(new CustomEvent('click-size', { bubbles: true }))
+
+    const pdpSizeSelectedEvent = {
+      name: 'clicks_seleccion_talla',
+      tags: {
+        value: 1
+      }
+    }
+
+    const pdpSizeSelectedMetricName = optimizely.getMetricName(pdpSizeSelectedEvent.name)
+
+    expect(findEventInOptimizely(pdpSizeSelectedMetricName, pdpSizeSelectedEvent.tags.value)).toBeDefined()
+  })
+
+  it('should search product clicked', () => {
+    const metrics = {
+      'clicks_productos_buscador': 'clicks_productos_buscador',
+    }
+    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    optimizely.bindSearchProductClicked()
+    
+    document.dispatchEvent(new CustomEvent('product-clicked', {
+      bubbles: true,
+      detail: {
+        product: {
+          id: productSku
+        }
+      }
+    }))
+
+    const searchProductClickedEvent = {
+      name: 'clicks_productos_buscador',
+      tags: {
+        value: 1
+      }
+    }
+
+    const searchProductClickedMetricName = optimizely.getMetricName(searchProductClickedEvent.name)
+
+    expect(findEventInOptimizely(searchProductClickedMetricName, searchProductClickedEvent.tags.value)).toBeDefined()
+  
+    const productClickedSS = sessionStorage.getItem(`searchProductClickedType${experimentCode}`)
+    expect(productClickedSS).toEqual(searchProductClickedEvent.name)
+  
+  })
+
+  it('should track search impressions events from productModular', () => {
+    const metrics = {
+      'impresiones': 'impresiones',
+    }
+    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    optimizely.bindSearchImpressionEvents()
+    
+    document.dispatchEvent(new CustomEvent('search-modular-impression', {
+      bubbles: true,
+      detail: {
+        source: ['search']
+      }
+    }))
+
+    const impressionEvent = {
+      name: 'impresiones',
+      tags: {
+        value: 1
+      }
+    }
+
+    const impressionMetricName = optimizely.getMetricName(impressionEvent.name)
+
+    expect(findEventInOptimizely(impressionMetricName, impressionEvent.tags.value)).toBeDefined()
+  })
+
+  it('should track search impressions events from parrilla in search', () => {
+    const metrics = {
+      'impresiones': 'impresiones',
+    }
+    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    optimizely.bindSearchImpressionEvents()
+    
+    document.dispatchEvent(new CustomEvent('send-products-impression', {
+      bubbles: true,
+      detail: {
+        products: [ { sku: productSku } , { sku: '987654321' }, { sku: '123456789' } ],
+      }
+    }))
+
+    const impressionEvent = {
+      name: 'impresiones',
+      tags: {
+        value: 3
+      }
+    }
+
+    const impressionMetricName = optimizely.getMetricName(impressionEvent.name)
+
+    expect(findEventInOptimizely(impressionMetricName, impressionEvent.tags.value)).toBeDefined()
+  })
+
   it('should push events', () => {
     const metrics = {
       'event_name': 'event_name',

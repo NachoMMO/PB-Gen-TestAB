@@ -1,0 +1,30 @@
+{
+  "name": "gen-test-ab",
+  "version": "1.0.0",
+  "author": "",
+  "main": "src/index.ts",
+  "description": "A project to generate test cases for a Pull&Bear page",
+  "keywords": [],
+  "license": "ISC",
+  "scripts": {
+    "build": "bun build ./src/sharedCode/index.js --outdir ./build --target node",
+    "build-def": "bun run build && bun run traspile-sc-es5",
+    "gen-test-ab": "bun run src/genTestAB.ts",
+    "upload-shared-code": "bun run build-def && bun run src/uploadSharedCode.ts",
+    "test": "bun test --watch",
+    "test-coverage": "bun test --coverage",
+    "traspile-sc-es5": "babel ./build/index.js -d build"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.23.9",
+    "@babel/node": "^7.23.9",
+    "@babel/preset-env": "^7.23.9",
+    "axios": "^1.6.7"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "^13.5.0",
+    "@types/node": "^20.11.13",
+    "bun-types": "^1.0.29"
+  }
+}

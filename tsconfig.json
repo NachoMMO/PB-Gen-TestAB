@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "types": [
+      "bun-types",
+    ],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true
+  }
+}

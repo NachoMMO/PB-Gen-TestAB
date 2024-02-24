@@ -54,12 +54,10 @@ const main = async () => {
     const experiment = await Experiments.create(parsedData.experiment);
     await createEvents(parsedData, experiment.id);
     // await Experiments.updateSharedCode(27732380067, text);
+    process.exit();
   } catch (err) {
     console.error(err)
   }
 }
-
-// await Experiments.getById(experiment.id);
-// await Events.getById('27496100106');
 
 main()

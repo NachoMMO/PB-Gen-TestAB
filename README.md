@@ -78,7 +78,7 @@ Siguiendo la estructura del JSON que tenemos que rellenar, vamos a comentar qué
 ### Generar un Test A/B nuevo 🪡
 Para poder generar un nuevo Test, primero deberemos rellenar el **data.json** con los datos correspondientes. Una vez que lo hagamos, basta con que en la raíz del proyecto, ejecutemos el siguiente comando:
 ```
-bun gen_test_ab
+bun gen-test-ab
 ```
 En la consola podemos ir viendo que se van creando los eventos en Optimizely, los cuales se corresponden con las métricas que hemos definido en el fichero de configuración **data.json**. Cuando finalice el proceso, se mostrará por consola el resultado del Test A/B creado que nos devuelve Optimizely a la hora de crearlo con la API.
 
@@ -145,7 +145,7 @@ En el fichero **./src/sharedCode/global/Optimizely.ts** tenemos una clase que al
 #### Perfecto! Ya tengo mi SharedCode, como lo puedo generar?
 Súper fácil, una vez que ya lo tienes listo en tu fichero **./src/sharedCode/index.ts**, tan solo tienes que ejecutar el siguiente comando:
 ```
-bun build_def
+bun build-def
 ```
 
 Si no ha habido ningún fallo al compilar y traspilar el código a ES5, deberías ver que se ha creado una carpeta **build** y dentro de ella, hay un fichero **index.js**. El contenido de este fichero es el que tienes que pegar en la sección **sharedCode** de Optimizely.

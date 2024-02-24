@@ -1,7 +1,6 @@
 import { CommonEvent, EventDetail, OptimizelyAttrs, OptimizelyEvent } from "./types.js";
 import { getFromSS } from "./utils.js";
 
-const inditex = window['inditex'] || {};
 const Backbone = window['Backbone'] || {};
 
 /**
@@ -45,7 +44,7 @@ class Optimizely {
    * dicho evento.
    */
   bindPDPColorSelectedClicked() {
-    if (inditex.isMobileDevice()) {
+    if (window['inditex'].isMobileDevice()) {
       Backbone.Radio.channel('productBus').on('setColorSelected', () => {
         if (!this.fnAllowBindEvents()) {
           return;
@@ -56,12 +55,12 @@ class Optimizely {
       return;
     }
 
-    document.addEventListener('product-image-selected', ev => {
+    document.addEventListener('product-image-selected', (ev: CommonEvent) => {
       if (!this.fnAllowBindEvents()) {
         return;
       }
   
-      const { target: { classList } } = ev as CommonEvent;
+      const { target: { classList } } = ev;
       if (classList.contains('show-colors-carousel')) {
         this.trackPDPColorSelectedClicked();
       }
@@ -196,14 +195,16 @@ class Optimizely {
   }
 
   /**
-   * Registra las visitas y visitantes únicos del experimento.
+   * Registra las visitas y visitantes únicos del experimento, en función
+   * de si el usuario ya ha visitado el experimento previamente o no, mediante
+   * el uso de cookies.
    */
   registerVisits() {
    this.trackVisit();
 
-    if (inditex.readCookie(`optyVisitExperiment${this.experimentCode}`) !== '1') {
+    if (window['inditex'].readCookie(`optyVisitExperiment${this.experimentCode}`) !== '1') {
       this.trackUniqueVisitor();
-      inditex.writeCookie(`optyVisitExperiment${this.experimentCode}`, '1', 30);
+      window['inditex'].writeCookie(`optyVisitExperiment${this.experimentCode}`, '1', 30);
     }
   }
 
@@ -218,15 +219,14 @@ class Optimizely {
    * anterior en el sessionStorage, de cara a ser trackeados en el evento
    * de confirmación de compra.
    *
-   * @param {Object} data - Datos del producto que se ha añadido al
-   * carrito.
+   * @param {string} productSku - SKU del producto.
    */
-  trackAddToCartSearchFromParrilla(data) {
+  trackAddToCartSearchFromParrilla(productSku) {
     const searchProductsCached = getFromSS(`clickProductsSearch${this.experimentCode}`);
     const clickOrigin = sessionStorage.getItem(`searchProductClickedType${this.experimentCode}`);
     let productAlreadyCached = false;
 
-    if (clickOrigin === "clicks_productos_buscador" && searchProductsCached !== null && searchProductsCached.indexOf(inditex.iProductId) !== -1) {
+    if (clickOrigin === "clicks_productos_buscador" && searchProductsCached !== null && searchProductsCached.indexOf(window['inditex'].iProductId) !== -1) {
       this.pushEvent('cestas_arrastradas_buscador', {
         value: 1.00
       });
@@ -235,8 +235,6 @@ class Optimizely {
     }
 
     if (productAlreadyCached) {
-      const productTestAB = data.model.toJSON();
-      const { sizeSelected: { sku: productSku } } = productTestAB;
       this.updateProductCookie(productSku);
     }
 
@@ -249,16 +247,13 @@ class Optimizely {
    * en la cookie de cara a ser trackeados en el evento de confirmación
    * de compra.
    *
-   * @param {Object} data - Datos del producto que se ha añadido al
-   * carrito.
+   * @param {string} productSku - SKU del producto.
    */
-  trackAddToCartFromPDP(data) {
+  trackAddToCartFromPDP(productSku) {
     this.pushEvent('clicks_add_to_cart', {
       value: 1.00
     });
 
-    const productTestAB = data.model.toJSON();
-    const { sizeSelected: { sku: productSku } } = productTestAB;
     this.updateProductCookie(productSku);
   }
 
@@ -268,8 +263,8 @@ class Optimizely {
    * previamente.
    */
   trackConfirmationRevenue() {
-    if (inditex.readCookie("optyVisitExperiment" + this.experimentCode) === '1') {
-      const productsCookie = inditex.readCookie(`optiProductsSku${this.experimentCode}`);
+    if (window['inditex'].readCookie("optyVisitExperiment" + this.experimentCode) === '1') {
+      const productsCookie = window['inditex'].readCookie(`optiProductsSku${this.experimentCode}`);
       const productsCookieValues = JSON.parse(productsCookie);
 
       if(!productsCookieValues) {
@@ -277,14 +272,14 @@ class Optimizely {
       }
 
       const optiTrackRevenue = setInterval(() => {
-        if (!inditex.iXOrderOrderSummaryJSON || !inditex.iXOrderOrderSummaryJSON.totalOrderEuro) {
+        if (!window['inditex'].iXOrderOrderSummaryJSON || !window['inditex'].iXOrderOrderSummaryJSON.totalOrderEuro) {
           return;
         }
 
         clearInterval(optiTrackRevenue);
 
         let totalRevenue = 0;
-        inditex.iXOrderOrderSummaryJSON.items.forEach(item => {
+        window['inditex'].iXOrderOrderSummaryJSON.items.forEach(item => {
           if (productsCookieValues.indexOf(item.sku) !== -1) {
             const unitPriceEuro = item.unitPriceEuro;
             totalRevenue = totalRevenue + unitPriceEuro;
@@ -358,7 +353,7 @@ class Optimizely {
    */
   trackSegmentationISO() {
     this.pushAttrs('user', {
-      'sgm_pais': inditex.iCountryCode
+      'sgm_pais': window['inditex'].iCountryCode
     });
   }
 
@@ -388,14 +383,14 @@ class Optimizely {
    */
   updateProductCookie(productSku: string) {
     const productCookieKey = `optiProductsSku${this.experimentCode}`;
-    const productsCookie = inditex.readCookie(productCookieKey);
+    const productsCookie = window['inditex'].readCookie(productCookieKey) || '[]';
     const productsCookieValues = JSON.parse(productsCookie) || [];
 
     if (productsCookieValues.indexOf(productSku) === -1) {
       productsCookieValues.push(productSku);
     }
 
-    inditex.writeCookie(productCookieKey, JSON.stringify(productsCookieValues), 30);
+    window['inditex'].writeCookie(productCookieKey, JSON.stringify(productsCookieValues), 30);
   }
 }
 

@@ -1,54 +1,58 @@
+import { MetricAggregator, MetricScope, WinningDirection } from "./enums";
+
+export interface EntryTestData {
+  audience:            "only_mobile" | "only_desktop" | "all_devices";
+  code:                String;
+  countries:           String[];
+  description:         String;
+  name:                String;
+  metrics_keys:        String[];
+}
+
 export interface GenTestAB {
-  experiment: Experiment;
-  metrics:    Metric[];
-  events?:    Event[];
+  experiment:          Experiment;
+  events:              Event[];
 }
 
 export interface Experiment {
-  audience_conditions: string;
-  description:         string;
-  holdback:            number;
-  name:                string;
-  project_id:          number;
-  status:              string;
-  traffic_allocation:  number;
-  type:                string;
+  audience_conditions: String;
+  description:         String;
+  holdback:            Number;
+  name:                String;
+  project_id:          Number;
+  status:              String;
+  traffic_allocation:  Number;
+  type:                String;
   url_targeting:       URLTargeting;
   variations:          Variation[];
 }
 
 export interface URLTargeting {
-  activation_type: string;
-  conditions:      string;
-  edit_url:        string;
+  activation_type:     String;
+  conditions:          String;
+  edit_url:            String;
 }
 
 export interface Variation {
-  actions:  any[];
-  archived: boolean;
-  name:     string;
-  status:   string;
-  weight:   number;
-}
-
-export interface Event {
-  archived:           boolean;
-  category:           string;
-  event_type:         string;
-  key:                string;
-  name:               string;
-  project_id:         number;
-  aggregator?:        string;
-  field?:             string;
-  scope?:             string;
-  winning_direction?: string;
+  actions:             any[];
+  archived:            Boolean;
+  name:                String;
+  status:              String;
+  weight:              Number;
 }
 
 export interface Metric {
-  key:               string;
-  name:              string;
-  aggregator:        string;
-  field?:            string;
-  scope:             string;
-  winning_direction: string;
+  key:                 String;
+  name:                String;
+  aggregator:          MetricAggregator;
+  field?:              String;
+  scope:               MetricScope;
+  winning_direction:   WinningDirection;
+}
+
+export interface Event extends Metric {
+  archived:            Boolean;
+  category:            String;
+  event_type:          String;
+  project_id:          Number;
 }

@@ -20,6 +20,11 @@ bun install
 ```
 Cuando se haya instalado (no tarda practicamente nada en hacerlo, porque Bun es... 💜), ya estás en disposición de utilizar este maravilloso proyecto.
 
+> [!IMPORTANT]
+> Antes de seguir, echa un ojo al fichero **.env** porque tienes que añadir tu API_TOKEN de Optimizely! Que si no, no vas a poder usar este proyecto pa na! Para que puedas obtener tu API_TOKEN, con tu usuario, accede a tu [perfil de Optimizely](https://app.optimizely.com/v2/profile/api) y haz click en **"Generate New Token...**
+
+![image](https://github.com/NachoMMO/PB-Gen-TestAB/assets/103255390/8589c52b-7f5e-453b-988b-1d422df43542)
+
 ## Estructura del proyecto 🗂️
 Este proyecto está estructurado con las siguientes carpetas:
 

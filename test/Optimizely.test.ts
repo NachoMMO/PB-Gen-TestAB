@@ -284,6 +284,7 @@ describe('Optimizely Test Cases', () => {
       items: [
         {
           sku: productSku,
+          quantity: 1,
           totalOrderEuro: 999,
           unitPriceEuro: 999
         }
@@ -300,7 +301,7 @@ describe('Optimizely Test Cases', () => {
       const revenueEvent = {
         name: 'ventas_euros',
         tags: {
-          revenue: 9.99
+          revenue: 999
         }
       }
 

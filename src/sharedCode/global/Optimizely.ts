@@ -281,14 +281,14 @@ class Optimizely {
         let totalRevenue = 0;
         window['inditex'].iXOrderOrderSummaryJSON.items.forEach(item => {
           if (productsCookieValues.indexOf(item.sku) !== -1) {
-            const unitPriceEuro = item.unitPriceEuro;
-            totalRevenue = totalRevenue + unitPriceEuro;
+            const { quantity, unitPriceEuro } = item;
+            totalRevenue = totalRevenue + (unitPriceEuro * quantity);
           }
         });
 
         if(totalRevenue !== 0) {
           this.pushEvent('ventas_euros', {
-            revenue: totalRevenue / 100
+            revenue: totalRevenue
           });
 
           this.pushEvent('ventas', {

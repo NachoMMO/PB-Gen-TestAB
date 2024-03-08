@@ -111,7 +111,7 @@ No te preocupes! Para eso tienes el fichero **./src/sharedCode/index.ts**, en el
 #### Ahhhh, vale! Pero comentame un poquito como funciona! 😟
 Cuando empieces a editar tu SharedCode, te encontrarás con el siguiente código en el fichero **./src/sharedCode/index.ts**:
 ```ts
-import Optimizely from "./global/Optimizely.js";
+import TestABTracker from "./global/TestABTracker.js";
 import { parseMetrics } from "./global/utils.js";
 import { code as experimentCode, metrics_keys } from '../data.json' assert { type: 'json' };
 
@@ -125,10 +125,10 @@ const main = () => {
     return true;
   }
 
-  const optimizely = new Optimizely(parsedMetrics, experimentCode, isCategoryInExperiment);
+  const testAbTracker = new TestABTracker(parsedMetrics, experimentCode, isCategoryInExperiment);
 
   if (inditex.iPage === 'ItxOrderConfirmationPage') {
-    optimizely.trackConfirmationRevenue();
+    testAbTracker.trackConfirmationRevenue();
   }
 };
 
@@ -142,10 +142,10 @@ Nota que hay una función **isCategoryInExperiment**, la cual, se utiliza para f
 
 #### Y hay algun sitio donde tengamos métodos comunes que se repiten Test tras Test?
 Cooooooorrecto ✅
-En el fichero **./src/sharedCode/global/Optimizely.ts** tenemos una clase que almacena todos los métodos que poco a poco, dependiendo de cómo queremos medir las métricas, vamos creando de cara a que se puedan reutilizar en próximos test. Por ejemplo, dentro de dicha clase, tenemos un método **registerMetrics** que nos sirve para trackear las métricas de visitas en cada Test.
+En el fichero **./src/sharedCode/global/TestABTracker.ts** tenemos una clase que almacena todos los métodos que poco a poco, dependiendo de cómo queremos medir las métricas, vamos creando de cara a que se puedan reutilizar en próximos test. Por ejemplo, dentro de dicha clase, tenemos un método **registerMetrics** que nos sirve para trackear las métricas de visitas en cada Test.
 
 > [!TIP]
-> Si alguna vez, cuando desarrollas un Test, añades un nuevo método dentro de **Optimizely.ts**, deberías subir ese cambio a la rama **develop** de cara a que se cuente con esa funcionalidad en los Test futuros.
+> Si alguna vez, cuando desarrollas un Test, añades un nuevo método dentro de **TestABTracker.ts**, deberías subir ese cambio a la rama **develop** de cara a que se cuente con esa funcionalidad en los Test futuros.
 
 #### Perfecto! Ya tengo mi SharedCode, como lo puedo generar?
 Súper fácil, una vez que ya lo tienes listo en tu fichero **./src/sharedCode/index.ts**, tan solo tienes que ejecutar el siguiente comando:

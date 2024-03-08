@@ -1,4 +1,4 @@
-import Optimizely from "./global/Optimizely.js";
+import TestABTracker from "./global/TestABTracker.js";
 import { parseMetrics } from "./global/utils.js";
 import { code as experimentCode, metrics_keys } from '../data.json' assert { type: 'json' };
 
@@ -12,10 +12,10 @@ const main = () => {
     return true;
   }
 
-  const optimizely = new Optimizely(parsedMetrics, experimentCode, isCategoryInExperiment);
+  const testAbTracker = new TestABTracker(parsedMetrics, experimentCode, isCategoryInExperiment);
 
   if (inditex.iPage === 'ItxOrderConfirmationPage') {
-    optimizely.trackConfirmationRevenue();
+    testAbTracker.trackConfirmationRevenue();
   }
 };
 

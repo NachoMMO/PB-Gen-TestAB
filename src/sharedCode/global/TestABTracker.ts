@@ -14,7 +14,7 @@ const Backbone = window['Backbone'] || {};
  * necesario pasarle un objeto con las métricas que se quieren
  * trackear, y el código del experimento.
  *
- * @class Optimizely
+ * @class TestABTracker
  *
  * @param { Object } metrics - Objeto con las keys de las métricas
  * a trackear.
@@ -22,7 +22,8 @@ const Backbone = window['Backbone'] || {};
  * @param { Function } fnAllowBindEvents - Función que devuelve si
  * se pueden bindear los eventos.
  */
-class Optimizely {
+
+class TestABTracker {
 
   metrics: Object;
   experimentCode: string;
@@ -394,4 +395,4 @@ class Optimizely {
   }
 }
 
-export default Optimizely;
+export default TestABTracker;

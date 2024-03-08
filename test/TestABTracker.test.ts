@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'bun:test'
-import Optimizely from '../src/sharedCode/global/Optimizely'
+import TestABTracker from '../src/sharedCode/global/TestABTracker'
 
 let cookies = ''
 const inditex = {
@@ -38,10 +38,10 @@ afterEach(() => {
   window['optimizely'] = []
 })
 
-describe('Optimizely Test Cases', () => {
+describe('TestABTracker Test Cases', () => {
   it('should create new instance', () => {
-    const optimizely = new Optimizely([], experimentCode, () => true)
-    expect(optimizely).toBeInstanceOf(Optimizely)
+    const optimizely = new TestABTracker([], experimentCode, () => true)
+    expect(optimizely).toBeInstanceOf(TestABTracker)
     expect(optimizely.metrics).toEqual([])
     expect(optimizely.experimentCode).toEqual(experimentCode)
     expect(optimizely.fnAllowBindEvents()).toEqual(true)
@@ -51,7 +51,7 @@ describe('Optimizely Test Cases', () => {
     const metrics = {
       'clicks_seleccion_talla': 'clicks_seleccion_talla',
     }
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     optimizely.bindPDPSizeSelectedClicked()
     
     document.dispatchEvent(new CustomEvent('click-size', { bubbles: true }))
@@ -72,7 +72,7 @@ describe('Optimizely Test Cases', () => {
     const metrics = {
       'clicks_productos_buscador': 'clicks_productos_buscador',
     }
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     optimizely.bindSearchProductClicked()
     
     document.dispatchEvent(new CustomEvent('product-clicked', {
@@ -104,7 +104,7 @@ describe('Optimizely Test Cases', () => {
     const metrics = {
       'impresiones': 'impresiones',
     }
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     optimizely.bindSearchImpressionEvents()
     
     document.dispatchEvent(new CustomEvent('search-modular-impression', {
@@ -130,7 +130,7 @@ describe('Optimizely Test Cases', () => {
     const metrics = {
       'impresiones': 'impresiones',
     }
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     optimizely.bindSearchImpressionEvents()
     
     document.dispatchEvent(new CustomEvent('send-products-impression', {
@@ -157,7 +157,7 @@ describe('Optimizely Test Cases', () => {
       'event_name': 'event_name',
     };
 
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     const event = {
       name: 'event_name',
       tags: {
@@ -170,7 +170,7 @@ describe('Optimizely Test Cases', () => {
   });
 
   it('should push attrs', () => {
-    const optimizely = new Optimizely([], experimentCode, () => true)
+    const optimizely = new TestABTracker([], experimentCode, () => true)
     const segmentationByISO = {
       type: 'user',
       attributes: {
@@ -182,7 +182,7 @@ describe('Optimizely Test Cases', () => {
   });
 
   it('should persist click on product in sessionStorage', () => {
-    const optimizely = new Optimizely([], experimentCode, () => true)
+    const optimizely = new TestABTracker([], experimentCode, () => true)
     optimizely.persistClickProduct(productSku, `clickProduct${experimentCode}`)
     const dataInSS = JSON.parse(sessionStorage.getItem(`clickProduct${experimentCode}`))
     expect(dataInSS).toBeArray()
@@ -195,7 +195,7 @@ describe('Optimizely Test Cases', () => {
       'visitantes_unicos': 'visitantes_unicos',
     }
 
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     optimizely.registerVisits()
 
     const visitEvent = {
@@ -226,7 +226,7 @@ describe('Optimizely Test Cases', () => {
     }
     window['inditex'].iProductId = productSku
 
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     optimizely.trackSearchProductClicked(productSku)
     optimizely.trackAddToCartSearchFromParrilla(productSku)
 
@@ -252,7 +252,7 @@ describe('Optimizely Test Cases', () => {
       'clicks_add_to_cart': 'clicks_add_to_cart',
     }
 
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     optimizely.trackAddToCartFromPDP(productSku)
 
     const addToCartEvent = {
@@ -292,7 +292,7 @@ describe('Optimizely Test Cases', () => {
       totalOrderEuro: 999
     }
 
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     optimizely.registerVisits()
     optimizely.updateProductCookie(productSku)
     optimizely.trackConfirmationRevenue()
@@ -327,7 +327,7 @@ describe('Optimizely Test Cases', () => {
       'impresiones': 'impresiones',
     }
 
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     optimizely.trackImpression()
 
     const impressionEvent = {
@@ -347,7 +347,7 @@ describe('Optimizely Test Cases', () => {
       'clicks_productos_buscador': 'clicks_productos_buscador',
     }
 
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     optimizely.trackSearchProductClicked(productSku)
 
     const searchProductClickedEvent = {
@@ -370,7 +370,7 @@ describe('Optimizely Test Cases', () => {
       'clicks_seleccion_color': 'clicks_seleccion_color',
     }
 
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     optimizely.trackPDPColorSelectedClicked()
 
     const pdpColorSelectedEvent = {
@@ -390,7 +390,7 @@ describe('Optimizely Test Cases', () => {
       'clicks_seleccion_talla': 'clicks_seleccion_talla',
     }
 
-    const optimizely = new Optimizely(metrics, experimentCode, () => true)
+    const optimizely = new TestABTracker(metrics, experimentCode, () => true)
     optimizely.trackPDPSizeSelectedClicked()
 
     const pdpSizeSelectedEvent = {
@@ -406,7 +406,7 @@ describe('Optimizely Test Cases', () => {
   });
 
   it('should update product cookie', () => {
-    const optimizely = new Optimizely([], experimentCode, () => true)
+    const optimizely = new TestABTracker([], experimentCode, () => true)
     optimizely.updateProductCookie(productSku)
     const productCookie = inditex.readCookie(`optiProductsSku${experimentCode}`) || '[]'
     const productCookieParsed = JSON.parse(productCookie) || []

@@ -1,5 +1,5 @@
-import { audiences, metrics } from './database.ts'
-import { EntryTestData, GenTestAB, Metric } from './types'
+import { audiences, metrics } from './database'
+import { EntryTestData, Metric } from './types'
 
 /**
  * Se encarga de obtener los datos necesarios para crear un experimento

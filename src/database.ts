@@ -66,6 +66,13 @@ export const metrics: Metric[] = [
     winning_direction: WinningDirection.Increase
   },
   {
+    key: "clicks_metodo_pago",
+    name: "Clicks al seleccionar método de pago",
+    aggregator: MetricAggregator.Count,
+    scope: MetricScope.Visitor,
+    winning_direction: WinningDirection.Increase
+  },
+  {
     key: "cestas_arrastradas_buscador",
     name: "Cestas arrastradas en buscador",
     aggregator: MetricAggregator.Count,

@@ -301,6 +301,41 @@ class TestABTracker {
   }
 
   /**
+   * Trackea el evento de ventas (ventas y ventas_euros) en el checkout,
+   * para el caso de que se quiera trackear el rebote de pantalla de pago.
+   */
+  trackCheckoutRevenue() {
+    if (window['inditex'].readCookie("optyVisitExperiment" + this.experimentCode) === '1') {
+      const optiTrackRevenue = setInterval(() => {
+
+        const orderSummary = window['inditex'].iXOrderOrderSummaryJSON;
+
+        if (!orderSummary || !orderSummary.totalOrderEuro) {
+          return;
+        }
+
+        clearInterval(optiTrackRevenue);
+
+        if(orderSummary.payment && orderSummary.payment.length) {
+          const paymentMethodSelected = orderSummary.payment[0].kind === 'credit_card'
+            ? orderSummary.payment[0].kind
+            : orderSummary.payment[0].type;
+      
+          this.trackSegmetationPaymentMethod(paymentMethodSelected);
+        }
+
+        this.pushEvent('ventas_euros', {
+          revenue: orderSummary.totalOrderEuro
+        });
+
+        this.pushEvent('ventas', {
+          value: 1.00
+        });
+      }, 500);
+    }
+  }
+
+  /**
    * Trackea el evento de impresiones de productos.
    *
    * @param {number} amount - Cantidad de impresiones.
@@ -330,6 +365,43 @@ class TestABTracker {
   }
 
   /**
+   * Trackea la acción de seleccionar un método de pago en el checkout.
+   */
+  trackSelectPaymentMethod() {
+    const checkoutStore = window['inditex'].pbCheckoutStore;
+
+    if (!checkoutStore) {
+      return;
+    }
+
+    checkoutStore.subscribe(() => {
+      const { lastAction, selectedPaymentMethod = null } = checkoutStore.getState();
+      
+      if (lastAction !== 'checkout/paymentMethodSelected') {
+        return;
+      }
+
+      if (selectedPaymentMethod) {
+        const { kind, type } = selectedPaymentMethod;
+        const paymentMethodSelected = kind === 'credit_card' ? kind : type;
+
+        this.trackSegmetationPaymentMethod(paymentMethodSelected);
+        this.trackSelectPaymentMethodClicked();
+      }
+    })
+  }
+
+  /**
+   * Trackea el evento de hacer click en un método de pago
+   * en el proceso de checkout.
+   */
+  trackSelectPaymentMethodClicked() {
+    this.pushEvent('clicks_metodo_pago', {
+      value: 1.00
+    });
+  }
+
+  /**
    * Trackea el evento de cambio de color seleccionado en la ficha de
    * producto.
    */
@@ -355,6 +427,17 @@ class TestABTracker {
   trackSegmentationISO() {
     this.pushAttrs('user', {
       'sgm_pais': window['inditex'].iCountryCode
+    });
+  }
+
+  /**
+   * Trackea la segmentación del método de pago.
+   *
+   * @param {string} paymentMethod - Método de pago.
+   */
+  trackSegmetationPaymentMethod(paymentMethod: string) {
+    this.pushAttrs('user', {
+      'sgm_metodo_pago': paymentMethod
     });
   }
 

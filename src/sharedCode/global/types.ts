@@ -8,6 +8,7 @@ export interface EventDetail extends Event {
 
 export interface OptimizelyAttrs {
   sgm_pais?:   string;
+  sgm_metodo_pago?: string;
 }
 
 export interface OptimizelyEvent {

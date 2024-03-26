@@ -15,7 +15,22 @@ const main = () => {
   const testAbTracker = new TestABTracker(parsedMetrics, experimentCode, isCategoryInExperiment);
 
   if (inditex.iPage === 'ItxOrderConfirmationPage') {
-    testAbTracker.trackConfirmationRevenue();
+    testAbTracker.trackCheckoutRevenue();
+  }
+
+  if (inditex.iPage === 'ItxOrderCheckoutPage') {
+    let bindCheckoutStoreEvents = false;
+
+    document.addEventListener('checkout-step-changed', (ev) => {
+      if(ev.detail?.state?.activeStep?.name === '#payment-methods') {
+        testAbTracker.registerVisits();
+
+        if (!bindCheckoutStoreEvents) {
+          bindCheckoutStoreEvents = true;
+          testAbTracker.trackSelectPaymentMethod();
+        }
+      }
+    });
   }
 };
 

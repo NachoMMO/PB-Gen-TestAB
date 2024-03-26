@@ -1,19 +1,16 @@
 {
   "audience": "all_devices",
-  "code": "2313862",
+  "code": "2380536",
   "countries": [
-    "de",
-    "fr",
-    "mx",
-    "tr"
+    "at",
+    "nl"
   ],
-  "description": "mostrar al 50% de usuarios la pdp actual en los productos monocolor vs una estructura de pdp en la este visible la opción del color",
-  "name": "TEST A/B PDP productos mono color",
+  "description": "Ocultamos solo al 20% de los usuarios la opción de Klarna Pay Later.  Importante, solo ocultamos el Pay Later, dejamos visible el Pay in 3",
+  "name": "TEST A/B Klarna vs NO Klarna",
   "metrics_keys": [
     "ventas_euros",
     "ventas",
-    "clicks_add_to_cart",
-    "clicks_seleccion_color",
+    "clicks_metodo_pago",
     "visitas",
     "visitantes_unicos"
   ]

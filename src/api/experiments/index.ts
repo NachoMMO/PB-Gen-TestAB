@@ -33,7 +33,7 @@ const updateSharedCode = async (id: Number, sharedCode: String) => {
     }
     await axios.patch(`/experiments/${id}`, data)
   } catch (error) {
-    console.log('Error ---->> ', error.message)
+    console.log('Error ---->> ', error)
   }
 }
 

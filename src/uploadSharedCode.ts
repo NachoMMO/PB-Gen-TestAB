@@ -6,9 +6,8 @@ const main = async () => {
     const file = Bun.file(path);
 
     const text = await file.text();
-    console.log(text);
 
-    await Experiments.updateSharedCode(27975160161, text);
+    await Experiments.updateSharedCode(28340810873, text);
 
     process.exit();
   } catch (err) {
